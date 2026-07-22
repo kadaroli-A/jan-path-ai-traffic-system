@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const SignalIntersection = ({ selectedLane, signalAction, urgency }) => {
   
@@ -14,26 +14,76 @@ const SignalIntersection = ({ selectedLane, signalAction, urgency }) => {
   const isForceGreen = signalAction?.includes('FORCE');
   const isHighUrgency = urgency === 'HIGH';
 
-  const getSignalState = (direction) => {
-    if (direction === selectedDirection) {
-      return 'GREEN';
-    }
-    return 'RED';
-  };
+  // State for smooth transitions with yellow light
+  const [signalStates, setSignalStates] = useState({
+    UP: 'RED',
+    DOWN: 'RED',
+    LEFT: 'RED',
+    RIGHT: 'RED'
+  });
+
+  // Smooth transition logic: RED → YELLOW → GREEN
+  useEffect(() => {
+    if (!selectedDirection) return;
+
+    // All directions RED initially
+    const initialStates = {
+      UP: 'RED',
+      DOWN: 'RED',
+      LEFT: 'RED',
+      RIGHT: 'RED'
+    };
+
+    // Step 1: Show YELLOW for selected direction (transition phase)
+    setSignalStates({
+      ...initialStates,
+      [selectedDirection]: 'YELLOW'
+    });
+
+    // Step 2: After 800ms, switch to GREEN
+    const timer = setTimeout(() => {
+      setSignalStates((prev) => ({
+        ...initialStates,
+        [selectedDirection]: 'GREEN'
+      }));
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [selectedDirection]);
 
   const SignalLight = ({ direction, label }) => {
-    const state = getSignalState(direction);
-    const isGreen = state === 'GREEN';
+    const state = signalStates[direction];
     const isSelected = direction === selectedDirection;
 
     return (
       <div className={`signal-direction ${direction.toLowerCase()} ${isSelected ? 'selected' : ''}`}>
-        <div className={`signal-arrow ${state.toLowerCase()} ${isForceGreen && isSelected ? 'blinking' : ''}`}>
+        {/* REALISTIC TRAFFIC LIGHT - 3 BULBS */}
+        <div className="traffic-light-housing">
+          {/* RED LIGHT */}
+          <div className={`traffic-bulb red ${state === 'RED' ? 'lit' : 'off'}`}>
+            <div className="bulb-glow"></div>
+          </div>
+          
+          {/* YELLOW LIGHT */}
+          <div className={`traffic-bulb yellow ${state === 'YELLOW' ? 'lit' : 'off'}`}>
+            <div className="bulb-glow"></div>
+          </div>
+          
+          {/* GREEN LIGHT */}
+          <div className={`traffic-bulb green ${state === 'GREEN' ? 'lit' : 'off'} ${isForceGreen && isSelected ? 'blinking' : ''}`}>
+            <div className="bulb-glow"></div>
+          </div>
+        </div>
+
+        {/* DIRECTION ARROW */}
+        <div className={`signal-arrow-icon ${state.toLowerCase()}`}>
           {direction === 'UP' && '↑'}
           {direction === 'DOWN' && '↓'}
           {direction === 'LEFT' && '←'}
           {direction === 'RIGHT' && '→'}
         </div>
+
+        {/* LANE LABEL */}
         <div className={`signal-label ${state.toLowerCase()}`}>
           {label}
         </div>
