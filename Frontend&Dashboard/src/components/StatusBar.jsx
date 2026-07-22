@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const StatusBar = ({ connectionStatus, junctionData }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -28,7 +28,9 @@ const StatusBar = ({ connectionStatus, junctionData }) => {
   return (
     <div className="status-bar">
       <div className="status-section">
+        {/* System Status */}
         <div className="status-item">
+          <span className="status-icon">⚙️</span>
           <span className={`status-indicator ${getStatusColor()}`}></span>
           <span className="status-label">SYSTEM</span>
           <span className="status-value">
@@ -41,24 +43,28 @@ const StatusBar = ({ connectionStatus, junctionData }) => {
           <>
             <div className="status-divider"></div>
             <div className="status-item emergency">
+              <span className="status-icon emergency-icon">🚨</span>
               <span className="status-label">EMERGENCY</span>
               <span className="status-value">ACTIVE</span>
             </div>
 
             <div className="status-divider"></div>
             <div className="status-item">
+              <span className="status-icon">🚦</span>
               <span className="status-label">JUNCTION</span>
               <span className="status-value">{junctionData.junction_id}</span>
             </div>
 
             <div className="status-divider"></div>
             <div className="status-item">
+              <span className="status-icon">⏱️</span>
               <span className="status-label">ETA</span>
               <span className="status-value eta">{formatETA(junctionData.eta)}</span>
             </div>
 
             <div className="status-divider"></div>
             <div className="status-item">
+              <span className="status-icon">🟢</span>
               <span className="status-label">SIGNAL</span>
               <span className="status-value signal">
                 {junctionData.signal_action?.split('_')[0] || 'N/A'}
@@ -69,9 +75,25 @@ const StatusBar = ({ connectionStatus, junctionData }) => {
       </div>
 
       <div className="status-section">
-        <div className="status-brand">JAN-PATH</div>
+        <div className="flex flex-col items-end gap-0.5">
+          <div className="status-brand-container">
+            <span className="status-icon-brand">🚑</span>
+            <span className="status-brand">JAN-PATH</span>
+          </div>
+          <div className="status-subtitle">
+            AI-Assisted Emergency Vehicle Traffic Intelligence
+          </div>
+        </div>
         <div className="status-divider"></div>
-        <div className="status-time">{currentTime.toLocaleTimeString('en-US', { hour12: false })}</div>
+        <div className="flex flex-col items-end gap-0.5">
+          <div className="status-time-container">
+            <span className="status-icon-time">🕐</span>
+            <span className="status-time">{currentTime.toLocaleTimeString('en-US', { hour12: false })}</span>
+          </div>
+          <div className="status-subtitle">
+            LIVE CONTROL CENTER
+          </div>
+        </div>
       </div>
     </div>
   );
