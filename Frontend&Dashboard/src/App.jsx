@@ -4,7 +4,7 @@ import Dashboard from './components/Dashboard';
 import { useJanPath } from './hooks/useJanPath';
 
 function App() {
-  const { junctionData, loading, error, connectionStatus } = useJanPath();
+  const { junctionData, loading, connectionStatus } = useJanPath();
 
   return (
     <div className="app-container">
